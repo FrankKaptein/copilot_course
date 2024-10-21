@@ -47,12 +47,31 @@ def get_user_input():
     print('Game Options:')
     for key, value in game_options.items():
         print(f'{key}: {value}')
-    # Get user input
-    user_input = int(input('Enter your choice: '))
-    # Validate user input
-    while user_input not in game_options.keys():
-        user_input = int(input('Invalid choice. Enter your choice: '))
-    return game_options[user_input]
+    print('q: Quit')
+        
+    # Get and validate user input
+    user_input = input('Enter your choice: ').strip().lower()
+    while not is_valid_input(user_input):
+        user_input = input('Invalid choice. Enter your choice: ').strip().lower()
+    
+    # Convert number input to corresponding game option
+    if user_input.isdigit():
+        user_input = game_options[int(user_input)]
+    
+    return user_input
+
+# Define function to validate user input
+def is_valid_input(user_input):
+    # Check if input is 'q' to quit
+    if user_input == 'q':
+        return True
+    # Check if input is a valid game option number
+    if user_input.isdigit() and int(user_input) in game_options.keys():
+        return True
+    # Check if input is a valid game option name
+    if user_input in game_options.values():
+        return True
+    return False
 
 # Define function to get computer input
 def get_computer_input():
@@ -69,16 +88,29 @@ def get_game_result(user_choice, computer_choice):
     
 # Define main function
 def main():
-    # Get user input
-    user_choice = get_user_input()
-    # Get computer input
-    computer_choice = get_computer_input()
-    # Determine game result
-    game_result = get_game_result(user_choice, computer_choice)
-    # Display game result
-    print(f'User choice: {user_choice}')
-    print(f'Computer choice: {computer_choice}')
-    print(f'Game result: {game_result}')
+    user_score = 0
+    computer_score = 0
+    while True:
+        # Get user input
+        user_choice = get_user_input()
+        if user_choice == 'q':
+            print('Thanks for playing!')
+            print(f'Final Score - You: {user_score}, Computer: {computer_score}')
+            break
+        # Get computer input
+        computer_choice = get_computer_input()
+        # Determine game result
+        game_result = get_game_result(user_choice, computer_choice)
+        # Update scores
+        if game_result == game_results['win']:
+            user_score += 1
+        elif game_result == game_results['lose']:
+            computer_score += 1
+        # Display game result
+        print(f'User choice: {user_choice}')
+        print(f'Computer choice: {computer_choice}')
+        print(f'Game result: {game_result}')
+        print(f'Score - You: {user_score}, Computer: {computer_score}')
 
 # Call main function
 if __name__ == '__main__':
